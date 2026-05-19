@@ -1,0 +1,8 @@
+node_modules/
+data/app.db
+data/app.db-wal
+data/app.db-shm
+.env.local
+public/main.js
+public/main.js.map
+public/globals.css
