@@ -3,7 +3,15 @@
 <div align="center">
 
 ```text
-🛒 ✨ 🥛 🥖 🍎
+🛒 ✨ 🥛 🥖 🍎 ✨ 🧀 🍌 🧃
+```
+
+**Your cheerful family shopping sidekick**
+
+```text
+╭───────────────────────────────╮
+│   Plan it • Grab it • Done!   │
+╰───────────────────────────────╯
 ```
 
 </div>
@@ -12,12 +20,22 @@
 
 ## What is it?
 
+<div align="center">
+
+```text
+🏡 📡 🛒 ➜ 📱
+```
+
+</div>
+
 ShoppingList is a shared family shopping list that runs on a Raspberry Pi at home and is
 accessible from anywhere — including at the supermarket on your phone. No app to install;
 it opens in your browser.
 
 Everyone in the family sees the same live list. When someone is at the shops and picks up
 an item, they tap **Got it** and it disappears from the list for everyone.
+
+> 🎉 **Good to know:** the list is shared, simple, and designed for quick use on a phone.
 
 ---
 
@@ -26,7 +44,7 @@ an item, they tap **Got it** and it disappears from the list for everyone.
 <div align="center">
 
 ```text
-🚪 ➜ 🔐 ➜ ✅
+🚪 ➜ 🔐 ➜ ✅ ➜ 🛒
 ```
 
 </div>
@@ -41,6 +59,8 @@ If you do not have an account yet, tap **Register** and create one.
 New accounts start with standard user access. Ask your administrator if you need
 elevated permissions.
 
+> 💡 **Tip:** Save the site as a bookmark on your phone so it is easy to open at the shop.
+
 ### Signing out
 
 Tap your name or the **Sign out** link in the navigation bar at the top of the page.
@@ -53,7 +73,7 @@ On a phone, tap the menu icon (three lines) to find the Sign out option.
 <div align="center">
 
 ```text
-📝 ➕ 🛍️ ➜ ✅
+📝 ➕ 🛍️ ➜ ✅ ➜ 🎉
 ```
 
 </div>
@@ -84,6 +104,8 @@ Each card shows:
 
 The item appears on the list immediately and is visible to everyone.
 
+> 🛍️ **Shopping magic:** once added, everyone sees it straight away.
+
 **Item not in the list?**
 If no matching items appear, the item is not in the pantry yet. Tap the link
 *"Add it to the pantry first"* to go and create it (see the Pantry section below),
@@ -96,11 +118,19 @@ When you are at the shops and pick up an item:
 1. Find the item on the list.
 2. Tap the green **Got it** button.
 3. A small box appears asking for the **price paid** — this is optional. Enter it if
-you want to track household spending. Leave it blank if you don't care.
+   you want to track household spending. Leave it blank if you don't care.
 4. Tap **Confirm**.
 
 The item is removed from the active list for everyone and the purchase is recorded in
 the history.
+
+<div align="center">
+
+```text
+🥫  🥛  🍞  ➜  ✅ Got it!
+```
+
+</div>
 
 ### Removing an item without buying it
 
@@ -118,7 +148,7 @@ The item disappears from the list without being recorded as a purchase.
 <div align="center">
 
 ```text
-🥫 🧈 🧼 📦
+🥫 🧈 🧼 📦 🍯 🥣
 ```
 
 </div>
@@ -135,6 +165,8 @@ Navigate to it by tapping **Pantry** in the navigation bar.
   Anchor butter, Anchor cheese, etc.).
 - Use the **category dropdown** to filter by category (Dairy, Cleaning, etc.).
 - Tap any item in the list to open its full detail page.
+
+> 🔎 **Quick idea:** searching by brand is often the fastest way to find familiar items.
 
 ### Adding a new pantry item
 
@@ -182,7 +214,7 @@ shopping list are not affected.
 <div align="center">
 
 ```text
-📊 🧾 💰 📦
+📊 🧾 💰 📦 📈 ✨
 ```
 
 </div>
@@ -202,6 +234,8 @@ The four summary cards show:
 Below the cards, **Recent purchases** shows the last 10 items that were marked as
 purchased, with who bought them and the price paid.
 
+> 📈 **At a glance:** this is the best page for a quick household check-in.
+
 ---
 
 ## Administrator Functions
@@ -209,7 +243,7 @@ purchased, with who bought them and the price paid.
 <div align="center">
 
 ```text
-🛠️ 👤 📜 💾
+🛠️ 👤 📜 💾 🔐
 ```
 
 </div>
@@ -305,7 +339,7 @@ and event log records. User accounts are kept. This is intended for a full reset
 <div align="center">
 
 ```text
-🛒 📱 ✅ 🧃
+🛒 📱 ✅ 🧃 🎯
 ```
 
 </div>
@@ -320,6 +354,14 @@ and event log records. User accounts are kept. This is intended for a full reset
 - If an item is unavailable at this shop, leave it on the list — someone else can
   pick it up elsewhere.
 
+<div align="center">
+
+```text
+🧺 aisle by aisle ➜ tap tap ➜ trolley full ➜ home time
+```
+
+</div>
+
 ---
 
 ## Frequently Asked Questions
@@ -327,7 +369,7 @@ and event log records. User accounts are kept. This is intended for a full reset
 <div align="center">
 
 ```text
-❓ 🥕 📦 🔄
+❓ 🥕 📦 🔄 💬
 ```
 
 </div>
@@ -371,7 +413,7 @@ database.
 <div align="center">
 
 ```text
-🔑 👑 ⚠️
+🔑 👑 ⚠️ 🚨
 ```
 
 </div>
@@ -386,3 +428,5 @@ Password: Admin1234!
 **Change this password immediately after first login.** The administrator should
 either update the password through the database tools or delete this account and
 create a personal one.
+
+> 🔒 **Important:** do not leave the default admin password in place.
