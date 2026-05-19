@@ -30,7 +30,7 @@ pantry.get("/", async (c) => {
   const category = c.req.query("category") ?? "";
 
   let sql = "SELECT * FROM pantry_items WHERE deletedAt IS NULL";
-  const params: unknown[] = [];
+  const params: string[] = [];
 
   if (search) {
     sql += " AND (name LIKE ? OR brand LIKE ?)";

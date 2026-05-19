@@ -27,7 +27,7 @@ events.get("/", async (c) => {
   const to = c.req.query("to") ?? "";
 
   let sql = "SELECT * FROM event_log WHERE 1=1";
-  const params: unknown[] = [];
+  const params: string[] = [];
 
   if (type) {
     sql += " AND eventType = ?";
