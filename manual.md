@@ -1,5 +1,13 @@
 # ShoppingList — User Manual
 
+<div align="center">
+
+```text
+🛒 ✨ 🥛 🥖 🍎
+```
+
+</div>
+
 ---
 
 ## What is it?
@@ -14,6 +22,14 @@ an item, they tap **Got it** and it disappears from the list for everyone.
 ---
 
 ## Getting Started
+
+<div align="center">
+
+```text
+🚪 ➜ 🔐 ➜ ✅
+```
+
+</div>
 
 ### Signing in
 
@@ -33,6 +49,14 @@ On a phone, tap the menu icon (three lines) to find the Sign out option.
 ---
 
 ## The Shopping List
+
+<div align="center">
+
+```text
+📝 ➕ 🛍️ ➜ ✅
+```
+
+</div>
 
 This is the main page you will use. Navigate to it by tapping **Shopping List** in the
 navigation bar.
@@ -72,7 +96,7 @@ When you are at the shops and pick up an item:
 1. Find the item on the list.
 2. Tap the green **Got it** button.
 3. A small box appears asking for the **price paid** — this is optional. Enter it if
-   you want to track household spending. Leave it blank if you don't care.
+you want to track household spending. Leave it blank if you don't care.
 4. Tap **Confirm**.
 
 The item is removed from the active list for everyone and the purchase is recorded in
@@ -90,6 +114,14 @@ The item disappears from the list without being recorded as a purchase.
 ---
 
 ## The Pantry
+
+<div align="center">
+
+```text
+🥫 🧈 🧼 📦
+```
+
+</div>
 
 The pantry is the master catalogue of items your household buys. Think of it as your
 personal product list — items are added once and then available forever for adding to
@@ -147,6 +179,14 @@ shopping list are not affected.
 
 ## Dashboard
 
+<div align="center">
+
+```text
+📊 🧾 💰 📦
+```
+
+</div>
+
 The dashboard gives a quick summary of household activity. Navigate to it by tapping
 **Dashboard** or the **Shopping List** logo in the navigation bar.
 
@@ -165,6 +205,14 @@ purchased, with who bought them and the price paid.
 ---
 
 ## Administrator Functions
+
+<div align="center">
+
+```text
+🛠️ 👤 📜 💾
+```
+
+</div>
 
 The following pages are only visible to users with the **Admin** role.
 
@@ -254,6 +302,14 @@ and event log records. User accounts are kept. This is intended for a full reset
 
 ## Tips for Using at the Shops
 
+<div align="center">
+
+```text
+🛒 📱 ✅ 🧃
+```
+
+</div>
+
 - Open **Shopping List** before you enter the shop so it loads while you still have
   a good connection.
 - The list works on any phone browser — Safari on iPhone, Chrome on Android.
@@ -267,6 +323,14 @@ and event log records. User accounts are kept. This is intended for a full reset
 ---
 
 ## Frequently Asked Questions
+
+<div align="center">
+
+```text
+❓ 🥕 📦 🔄
+```
+
+</div>
 
 **Can two people use the list at the same time?**
 Yes. The list is shared and live. If one family member is at the shop tapping Got it
@@ -303,6 +367,14 @@ database.
 ---
 
 ## Default Administrator Account
+
+<div align="center">
+
+```text
+🔑 👑 ⚠️
+```
+
+</div>
 
 When the application is first set up, a default admin account is created:
 
