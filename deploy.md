@@ -6,6 +6,57 @@ a friend's place, or on the couch.
 
 ---
 
+## Current production instance
+
+The live production server is already set up and running:
+
+| Detail | Value |
+|--------|-------|
+| **Pi hostname** | `piserver.localdomain` |
+| **SSH access** | `ssh optimho@piserver.localdomain` |
+| **App path** | `/home/optimho/Shopping` |
+| **Public URL** | `https://piserver.chimp-pirarucu.ts.net` |
+| **Tailscale Funnel** | Active — `sudo tailscale funnel status` to check |
+| **systemd service** | `shopping-list` — managed with `sudo systemctl ...` |
+| **Environment file** | `/home/optimho/Shopping/.env.local` |
+
+`.env.local` contains:
+```
+BETTER_AUTH_URL=https://piserver.chimp-pirarucu.ts.net
+PORT=3000
+```
+
+### Deploying an update to the Pi
+
+```bash
+# SSH into the Pi
+ssh optimho@piserver.localdomain
+
+# Pull latest code and rebuild
+cd /home/optimho/Shopping
+git pull
+~/.bun/bin/bun install
+~/.bun/bin/bun run build
+sudo systemctl restart shopping-list
+
+# Verify it restarted cleanly
+sudo systemctl status shopping-list
+```
+
+### Quick Pi maintenance commands
+
+| Task | Command |
+|------|---------|
+| App status | `sudo systemctl status shopping-list` |
+| Restart app | `sudo systemctl restart shopping-list` |
+| Live logs | `sudo journalctl -u shopping-list -f` |
+| Check Funnel | `sudo tailscale funnel status` |
+| Rebuild frontend | `cd /home/optimho/Shopping && ~/.bun/bin/bun run build` |
+
+---
+
+---
+
 ## How remote access works
 
 The Pi runs the application at home on your local network. **Tailscale Funnel** gives
@@ -97,19 +148,19 @@ You should see a version number like `1.3.14`.
 
 ### 2.2 Copy the application to the Pi
 
-**Option A — from GitHub (if you pushed the repo):**
+**Option A — from GitHub (recommended):**
 
 ```bash
-cd /home/pi
-git clone https://github.com/optimho/Shopping-List.git shopping-list
+cd ~
+git clone https://github.com/optimho/Shopping-List.git Shopping
 ```
 
-**Option B — copy from your Windows machine:**
+**Option B — copy from your development machine:**
 
-Open a terminal on your Windows machine (not on the Pi) and run:
+Open a terminal on your dev machine (not on the Pi) and run:
 
 ```bash
-scp -r C:/Users/micha/claudeProject/ShoppingList pi@shopping.local:/home/pi/shopping-list
+scp -r /path/to/Shopping-List YOUR_USER@piserver.localdomain:/home/YOUR_USER/Shopping
 ```
 
 ### 2.3 Install dependencies and initialise the database
@@ -117,11 +168,13 @@ scp -r C:/Users/micha/claudeProject/ShoppingList pi@shopping.local:/home/pi/shop
 Back on the Pi:
 
 ```bash
-cd /home/pi/shopping-list
-bun install
-bun scripts/init-db.ts
-bun scripts/seed-admin.ts
+cd ~/Shopping
+~/.bun/bin/bun install
+~/.bun/bin/bun scripts/init-db.ts
+~/.bun/bin/bun scripts/seed-admin.ts
 ```
+
+Note: use the full path `~/.bun/bin/bun` — `bun` is only in PATH in interactive shells.
 
 You will see:
 
@@ -230,15 +283,10 @@ Save and exit: press `Ctrl+X`, then `Y`, then `Enter`.
 ### 4.2 Build the frontend
 
 ```bash
-bun run build
+~/.bun/bin/bun run build
 ```
 
-This compiles the React frontend and CSS. You should see:
-
-```
-Bundled 28 modules in ~50ms
-Done in ~50ms
-```
+This compiles the React frontend JS and CSS in one step. You should see output from both the bundler and the Tailwind CSS compiler.
 
 ---
 
@@ -253,7 +301,7 @@ Pi boots and restarts itself if it ever crashes.
 sudo nano /etc/systemd/system/shopping-list.service
 ```
 
-Paste the following (adjust the username `pi` if you used a different one):
+Paste the following (replace `YOUR_USER` with your Pi username and adjust the path):
 
 ```ini
 [Unit]
@@ -263,16 +311,18 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-User=pi
-WorkingDirectory=/home/pi/shopping-list
-ExecStart=/home/pi/.bun/bin/bun server.ts
+User=YOUR_USER
+WorkingDirectory=/home/YOUR_USER/Shopping
+ExecStart=/home/YOUR_USER/.bun/bin/bun server.ts
 Restart=always
 RestartSec=5
-EnvironmentFile=/home/pi/shopping-list/.env.local
+EnvironmentFile=/home/YOUR_USER/Shopping/.env.local
 
 [Install]
 WantedBy=multi-user.target
 ```
+
+Note: use the full path to bun (`/home/YOUR_USER/.bun/bin/bun`) — `bun` is not available in non-login shells.
 
 Save and exit: `Ctrl+X`, `Y`, `Enter`.
 
@@ -391,26 +441,26 @@ including all pantry items, shopping history, and event log.
 
 If you make changes to the code on your Windows machine and want to deploy them:
 
-**Option A — via GitHub:**
+**Option A — via GitHub (recommended):**
 ```bash
-cd /home/pi/shopping-list
+cd /home/YOUR_USER/Shopping
 git pull
-bun install
-bun run build
+~/.bun/bin/bun install
+~/.bun/bin/bun run build
 sudo systemctl restart shopping-list
 ```
 
 **Option B — copy files manually:**
 ```bash
-# On your Windows machine:
-scp -r C:/Users/micha/claudeProject/ShoppingList/src pi@shopping.local:/home/pi/shopping-list/
-scp -r C:/Users/micha/claudeProject/ShoppingList/lib pi@shopping.local:/home/pi/shopping-list/
-scp C:/Users/micha/claudeProject/ShoppingList/server.ts pi@shopping.local:/home/pi/shopping-list/
+# On your local machine:
+scp -r ./src YOUR_USER@piserver.localdomain:/home/YOUR_USER/Shopping/
+scp -r ./lib YOUR_USER@piserver.localdomain:/home/YOUR_USER/Shopping/
+scp ./server.ts YOUR_USER@piserver.localdomain:/home/YOUR_USER/Shopping/
 
 # Then on the Pi:
-cd /home/pi/shopping-list
-bun install
-bun run build
+cd /home/YOUR_USER/Shopping
+~/.bun/bin/bun install
+~/.bun/bin/bun run build
 sudo systemctl restart shopping-list
 ```
 
@@ -439,17 +489,14 @@ rejected.
 
 Check it:
 ```bash
-cat /home/pi/shopping-list/.env.local
+cat ~/.env.local   # or the full path to your app's .env.local
 ```
 
-It should read:
-```
-BETTER_AUTH_URL=https://shopping.tail1a2b3c.ts.net
-```
+It must match the URL you access in your browser exactly (including `https://`).
 
 After changing `.env.local`, rebuild and restart:
 ```bash
-bun run build
+~/.bun/bin/bun run build
 sudo systemctl restart shopping-list
 ```
 
@@ -486,4 +533,4 @@ with the new URL, rebuild, and restart the service.
 | View logs | `sudo journalctl -u shopping-list -f` |
 | Check Funnel | `sudo tailscale funnel status` |
 | Find Pi hostname | `tailscale status --self` |
-| Rebuild frontend | `cd /home/pi/shopping-list && bun run build` |
+| Rebuild frontend | `cd ~/Shopping && ~/.bun/bin/bun run build` |
