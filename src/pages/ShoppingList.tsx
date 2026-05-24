@@ -55,7 +55,7 @@ export default function ShoppingList() {
 
   useEffect(() => {
     if (!addOpen) return;
-    fetch("/api/pantry", { credentials: "include" })
+    fetch("/api/store", { credentials: "include" })
       .then((r) => r.json())
       .then((data) => setPantryItems(data.map((p: PantryItem & { sizes: string | string[] }) => ({
         ...p,
@@ -230,7 +230,7 @@ export default function ShoppingList() {
                 <>
                   <input
                     type="search"
-                    placeholder="Search pantry…"
+                    placeholder="Search store…"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     autoFocus
@@ -263,8 +263,8 @@ export default function ShoppingList() {
                   </div>
                   <p className="text-xs text-gray-400 text-center">
                     Item not in the list?{" "}
-                    <Link to="/pantry" className="text-indigo-600 hover:underline">
-                      Add it to the pantry first
+                    <Link to="/store" className="text-indigo-600 hover:underline">
+                      Add it to the store first
                     </Link>
                   </p>
                 </>

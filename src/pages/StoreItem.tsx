@@ -53,7 +53,7 @@ export default function PantryItem() {
   const [formError, setFormError] = useState("");
 
   async function load() {
-    const res = await fetch(`/api/pantry/${id}`, { credentials: "include" });
+    const res = await fetch(`/api/store/${id}`, { credentials: "include" });
     if (res.ok) {
       const data = await res.json();
       setItem(data);
@@ -65,7 +65,7 @@ export default function PantryItem() {
       setFormTypicalPrice(data.typicalPrice != null ? String(data.typicalPrice) : "");
       setFormNotes(data.notes ?? "");
     } else {
-      navigate("/pantry");
+      navigate("/store");
     }
     setLoading(false);
   }
@@ -77,7 +77,7 @@ export default function PantryItem() {
     setSaving(true);
     setFormError("");
     const sizes = formSizes.split(",").map((s) => s.trim()).filter(Boolean);
-    const res = await fetch(`/api/pantry/${id}`, {
+    const res = await fetch(`/api/store/${id}`, {
       method: "PUT",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -102,9 +102,9 @@ export default function PantryItem() {
   }
 
   async function handleDelete() {
-    if (!confirm(`Delete "${item?.name}" from the pantry? This cannot be undone.`)) return;
-    const res = await fetch(`/api/pantry/${id}`, { method: "DELETE", credentials: "include" });
-    if (res.ok) navigate("/pantry");
+    if (!confirm(`Delete "${item?.name}" from the store? This cannot be undone.`)) return;
+    const res = await fetch(`/api/store/${id}`, { method: "DELETE", credentials: "include" });
+    if (res.ok) navigate("/store");
   }
 
   if (loading) return <div className="max-w-2xl mx-auto px-4 py-8 text-gray-400">Loading…</div>;
@@ -120,8 +120,8 @@ export default function PantryItem() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="flex items-center gap-3 mb-6">
-        <Link to="/pantry" className="text-indigo-600 hover:underline text-sm">
-          ← Pantry
+        <Link to="/store" className="text-indigo-600 hover:underline text-sm">
+          ← Store
         </Link>
       </div>
 

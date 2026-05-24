@@ -34,7 +34,8 @@ export default function Nav() {
             <div className="hidden sm:flex items-center gap-1">
               <Link to="/" className={linkClass("/")}>Dashboard</Link>
               <Link to="/list" className={linkClass("/list")}>Shopping List</Link>
-              <Link to="/pantry" className={linkClass("/pantry")}>Pantry</Link>
+              <Link to="/cupboard" className={linkClass("/cupboard")}>Cupboard</Link>
+              <Link to="/store" className={linkClass("/store")}>Store</Link>
               {isAdmin && (
                 <>
                   <Link to="/users" className={linkClass("/users")}>Users</Link>
@@ -75,7 +76,8 @@ export default function Nav() {
           <div className="sm:hidden pb-3 flex flex-col gap-1">
             <Link to="/" className={linkClass("/")} onClick={() => setMenuOpen(false)}>Dashboard</Link>
             <Link to="/list" className={linkClass("/list")} onClick={() => setMenuOpen(false)}>Shopping List</Link>
-            <Link to="/pantry" className={linkClass("/pantry")} onClick={() => setMenuOpen(false)}>Pantry</Link>
+            <Link to="/cupboard" className={linkClass("/cupboard")} onClick={() => setMenuOpen(false)}>Cupboard</Link>
+            <Link to="/store" className={linkClass("/store")} onClick={() => setMenuOpen(false)}>Store</Link>
             {isAdmin && (
               <>
                 <Link to="/users" className={linkClass("/users")} onClick={() => setMenuOpen(false)}>Users</Link>

@@ -7,6 +7,8 @@ interface PantryItem {
   name: string;
   brand: string | null;
   category: string | null;
+  sizes: string | null;
+  defaultSize: string | null;
   typicalPrice: number | null;
 }
 
@@ -33,10 +35,19 @@ export default function Pantry() {
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
 
+  // Quick-add to list
+  const [addingItem, setAddingItem] = useState<PantryItem | null>(null);
+  const [addSize, setAddSize] = useState("");
+  const [addQty, setAddQty] = useState(1);
+  const [addNotes, setAddNotes] = useState("");
+  const [addSaving, setAddSaving] = useState(false);
+  const [addError, setAddError] = useState("");
+  const [addSuccess, setAddSuccess] = useState(false);
+
   async function load() {
     const [itemsRes, catsRes] = await Promise.all([
-      fetch(`/api/pantry?search=${encodeURIComponent(search)}&category=${encodeURIComponent(category)}`, { credentials: "include" }),
-      fetch("/api/pantry/categories", { credentials: "include" }),
+      fetch(`/api/store?search=${encodeURIComponent(search)}&category=${encodeURIComponent(category)}`, { credentials: "include" }),
+      fetch("/api/store/categories", { credentials: "include" }),
     ]);
     if (itemsRes.ok) setItems(await itemsRes.json());
     if (catsRes.ok) setCategories(await catsRes.json());
@@ -52,7 +63,7 @@ export default function Pantry() {
 
     const sizes = formSizes.split(",").map((s) => s.trim()).filter(Boolean);
 
-    const res = await fetch("/api/pantry", {
+    const res = await fetch("/api/store", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -70,25 +81,58 @@ export default function Pantry() {
     setSaving(false);
     if (res.ok) {
       const { id } = await res.json();
-      navigate(`/pantry/${id}`);
+      navigate(`/store/${id}`);
     } else {
       const data = await res.json();
       setFormError(data.error ?? "Failed to create item");
     }
   }
 
+  function openAdd(item: PantryItem) {
+    setAddingItem(item);
+    const sizes = item.sizes ? JSON.parse(item.sizes) as string[] : [];
+    setAddSize(item.defaultSize ?? sizes[0] ?? "");
+    setAddQty(1);
+    setAddNotes("");
+    setAddError("");
+    setAddSuccess(false);
+  }
+
+  async function handleAddToList() {
+    if (!addingItem) return;
+    setAddSaving(true);
+    setAddError("");
+    const res = await fetch("/api/list", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        pantryItemId: addingItem.id,
+        size: addSize || null,
+        quantity: addQty,
+        notes: addNotes || null,
+      }),
+    });
+    setAddSaving(false);
+    if (res.ok) {
+      setAddSuccess(true);
+      setTimeout(() => setAddingItem(null), 900);
+    } else {
+      const data = await res.json();
+      setAddError(data.error ?? "Failed to add item");
+    }
+  }
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Pantry</h1>
-        {isAdmin && (
-          <button
-            onClick={() => setFormOpen(true)}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-          >
-            + New item
-          </button>
-        )}
+        <h1 className="text-2xl font-bold text-gray-900">Store</h1>
+        <button
+          onClick={() => setFormOpen(true)}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+        >
+          + New item
+        </button>
       </div>
 
       {/* Filters */}
@@ -117,11 +161,9 @@ export default function Pantry() {
       ) : items.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           <p className="font-medium text-gray-600">No items found</p>
-          {isAdmin && (
-            <button onClick={() => setFormOpen(true)} className="mt-3 text-indigo-600 hover:underline text-sm">
-              Add the first pantry item
-            </button>
-          )}
+          <button onClick={() => setFormOpen(true)} className="mt-3 text-indigo-600 hover:underline text-sm">
+            Add the first store item
+          </button>
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -132,20 +174,37 @@ export default function Pantry() {
                 <th className="text-left px-4 py-3 font-medium text-gray-600 hidden sm:table-cell">Brand</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600 hidden sm:table-cell">Category</th>
                 <th className="text-right px-4 py-3 font-medium text-gray-600">Typical price</th>
+                <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {items.map((item) => (
-                <tr
-                  key={item.id}
-                  onClick={() => navigate(`/pantry/${item.id}`)}
-                  className="hover:bg-gray-50 cursor-pointer transition-colors"
-                >
-                  <td className="px-4 py-3 font-medium text-gray-900">{item.name}</td>
-                  <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">{item.brand ?? "—"}</td>
-                  <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">{item.category ?? "—"}</td>
-                  <td className="px-4 py-3 text-right text-gray-700">
+                <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                  <td
+                    className="px-4 py-3 font-medium text-gray-900 cursor-pointer"
+                    onClick={() => navigate(`/store/${item.id}`)}
+                  >{item.name}</td>
+                  <td
+                    className="px-4 py-3 text-gray-500 hidden sm:table-cell cursor-pointer"
+                    onClick={() => navigate(`/store/${item.id}`)}
+                  >{item.brand ?? "—"}</td>
+                  <td
+                    className="px-4 py-3 text-gray-500 hidden sm:table-cell cursor-pointer"
+                    onClick={() => navigate(`/store/${item.id}`)}
+                  >{item.category ?? "—"}</td>
+                  <td
+                    className="px-4 py-3 text-right text-gray-700 cursor-pointer"
+                    onClick={() => navigate(`/store/${item.id}`)}
+                  >
                     {item.typicalPrice != null ? `$${item.typicalPrice.toFixed(2)}` : "—"}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); openAdd(item); }}
+                      className="text-indigo-600 hover:text-indigo-800 text-xs font-medium border border-indigo-200 hover:border-indigo-400 rounded px-2 py-1 transition-colors whitespace-nowrap"
+                    >
+                      + Add
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -154,12 +213,77 @@ export default function Pantry() {
         </div>
       )}
 
+      {/* Quick-add to shopping list modal */}
+      {addingItem && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-sm">
+            <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+              <h2 className="font-semibold text-gray-800">Add to shopping list</h2>
+              <button onClick={() => setAddingItem(null)} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+            </div>
+            <div className="p-5 space-y-4">
+              <p className="text-gray-700 font-medium">{addingItem.name}{addingItem.brand ? ` — ${addingItem.brand}` : ""}</p>
+
+              {addError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-2 text-sm">{addError}</div>
+              )}
+              {addSuccess && (
+                <div className="bg-green-50 border border-green-200 text-green-700 rounded-lg px-4 py-2 text-sm font-medium">Added to list!</div>
+              )}
+
+              {(() => {
+                const sizes = addingItem.sizes ? JSON.parse(addingItem.sizes) as string[] : [];
+                return sizes.length > 0 ? (
+                  <Field label="Size">
+                    <select value={addSize} onChange={(e) => setAddSize(e.target.value)} className={inputClass}>
+                      <option value="">— no size —</option>
+                      {sizes.map((s) => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </Field>
+                ) : (
+                  <Field label="Size (optional)">
+                    <input type="text" value={addSize} onChange={(e) => setAddSize(e.target.value)} placeholder="e.g. 500g" className={inputClass} />
+                  </Field>
+                );
+              })()}
+
+              <Field label="Quantity">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setAddQty((q) => Math.max(1, q - 1))}
+                    className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors text-lg leading-none"
+                  >−</button>
+                  <span className="w-8 text-center font-medium text-gray-900">{addQty}</span>
+                  <button
+                    onClick={() => setAddQty((q) => q + 1)}
+                    className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors text-lg leading-none"
+                  >+</button>
+                </div>
+              </Field>
+
+              <Field label="Note (optional)">
+                <textarea value={addNotes} onChange={(e) => setAddNotes(e.target.value)} rows={2} placeholder="e.g. get reduced-salt version" className={inputClass} />
+              </Field>
+            </div>
+            <div className="px-5 py-4 border-t border-gray-200">
+              <button
+                onClick={handleAddToList}
+                disabled={addSaving || addSuccess}
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition-colors disabled:opacity-50"
+              >
+                {addSaving ? "Adding…" : addSuccess ? "Added!" : "Add to list"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* New item modal */}
       {formOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col">
             <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
-              <h2 className="font-semibold text-gray-800">New pantry item</h2>
+              <h2 className="font-semibold text-gray-800">New store item</h2>
               <button onClick={() => setFormOpen(false)} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
             </div>
 

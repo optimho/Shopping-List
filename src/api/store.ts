@@ -57,11 +57,10 @@ pantry.get("/categories", async (c) => {
   return c.json(rows.map((r) => r.category));
 });
 
-// POST /api/pantry — create item (admin)
+// POST /api/pantry — create item (any logged-in user)
 pantry.post("/", async (c) => {
   const session = await getSession(c.req.raw);
   if (!session) return c.json({ error: "Unauthorized" }, 401);
-  if (session.user.role !== "admin") return c.json({ error: "Forbidden" }, 403);
 
   const body = await c.req.json();
   if (!body.name) return c.json({ error: "name is required" }, 400);

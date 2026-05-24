@@ -33,7 +33,8 @@ accessible from anywhere — including at the supermarket on your phone. No app 
 it opens in your browser.
 
 Everyone in the family sees the same live list. When someone is at the shops and picks up
-an item, they tap **Got it** and it disappears from the list for everyone.
+an item, they tap **Got it** and it disappears from the list for everyone. The item is
+then automatically added to the **Cupboard** — your home inventory of what's in the house.
 
 > 🎉 **Good to know:** the list is shared, simple, and designed for quick use on a phone.
 
@@ -96,7 +97,7 @@ Each card shows:
 
 1. Tap **+ Add item** in the top-right corner.
 2. A search panel appears. Start typing the name of the item (e.g. "milk", "bread").
-3. Matching items from the pantry appear as you type. Tap the one you want.
+3. Matching items from the store appear as you type. Tap the one you want.
 4. Select the **size** if the item has multiple sizes. The default size is pre-selected.
 5. Set the **quantity** (default is 1).
 6. Optionally add a **note** for the shopper (e.g. "reduced-salt version if available").
@@ -107,8 +108,8 @@ The item appears on the list immediately and is visible to everyone.
 > 🛍️ **Shopping magic:** once added, everyone sees it straight away.
 
 **Item not in the list?**
-If no matching items appear, the item is not in the pantry yet. Tap the link
-*"Add it to the pantry first"* to go and create it (see the Pantry section below),
+If no matching items appear, the item is not in the store catalogue yet. Tap the link
+*"Add it to the store first"* to go and create it (see the Store section below),
 then come back and add it to the list.
 
 ### Marking an item as purchased — "Got it"
@@ -121,13 +122,13 @@ When you are at the shops and pick up an item:
    you want to track household spending. Leave it blank if you don't care.
 4. Tap **Confirm**.
 
-The item is removed from the active list for everyone and the purchase is recorded in
-the history.
+The item is removed from the active list for everyone, the purchase is recorded in
+the history, and the item automatically appears in your **Cupboard**.
 
 <div align="center">
 
 ```text
-🥫  🥛  🍞  ➜  ✅ Got it!
+🥫  🥛  🍞  ➜  ✅ Got it!  ➜  🧺 In the cupboard
 ```
 
 </div>
@@ -143,7 +144,51 @@ The item disappears from the list without being recorded as a purchase.
 
 ---
 
-## The Pantry
+## The Cupboard
+
+<div align="center">
+
+```text
+🧺 🥛 🧈 🍯 🥫 📦
+```
+
+</div>
+
+The Cupboard tracks what you actually have at home right now. Every time you press
+**Got it** on the shopping list, the item is automatically added to the Cupboard.
+
+Navigate to it by tapping **Cupboard** in the navigation bar.
+
+### What you see
+
+A table of everything currently in your cupboard, showing the item name, brand, size,
+and quantity (shown as a small purple badge).
+
+### Marking an item as used up
+
+When you finish using something:
+
+1. Find the item in the Cupboard.
+2. Tap the **Used up** button.
+3. The quantity decrements by 1.
+4. When the last one is gone, a prompt appears:
+
+```text
+🛒  All used up!
+    Add [item name] to the shopping list?
+    [ No thanks ]  [ Yes, add it ]
+```
+
+- Tap **Yes, add it** — the item is immediately added to the shopping list so the next
+  shopper knows to pick it up.
+- Tap **No thanks** — nothing happens; you can add it to the list manually later.
+
+> 💡 **Tip:** if you bought 3 of something, the Cupboard shows Qty 3. Each "Used up"
+> press decrements by one, so you get a prompt only when the very last one is gone.
+
+---
+
+## The Store
 
 <div align="center">
 
@@ -153,28 +198,36 @@ The item disappears from the list without being recorded as a purchase.
 
 </div>
 
-The pantry is the master catalogue of items your household buys. Think of it as your
+The Store is the master catalogue of items your household buys. Think of it as your
 personal product list — items are added once and then available forever for adding to
 the shopping list.
 
-Navigate to it by tapping **Pantry** in the navigation bar.
+Navigate to it by tapping **Store** in the navigation bar.
 
 ### Browsing and searching
 
 - Use the **search box** to filter by name or brand (e.g. type "anchor" to find
   Anchor butter, Anchor cheese, etc.).
 - Use the **category dropdown** to filter by category (Dairy, Cleaning, etc.).
-- Tap any item in the list to open its full detail page.
+- Tap any item's name to open its full detail page.
 
 > 🔎 **Quick idea:** searching by brand is often the fastest way to find familiar items.
 
-### Adding a new pantry item
+### Adding directly to the shopping list from the Store
 
-If something you want to buy is not in the pantry, you need to add it first.
+Each item in the Store has a **+ Add** button on the right. Tap it to open a quick
+add panel without leaving the Store page:
 
-**Administrators** tap **+ New item** at the top of the Pantry page.
+1. Select the **size** (or type one if no sizes are defined).
+2. Set the **quantity** using the − / + buttons.
+3. Optionally add a **note**.
+4. Tap **Add to list** — the item goes straight onto the shopping list.
 
-Fill in the form:
+### Adding a new store item
+
+Any logged-in user can add new items to the Store catalogue.
+
+Tap **+ New item** at the top of the Store page and fill in the form:
 
 | Field | What to enter |
 |-------|--------------|
@@ -188,23 +241,22 @@ Fill in the form:
 
 Tap **Create item**. You are taken straight to the new item's detail page.
 
-### Pantry item detail page
+### Store item detail page
 
-Tap any item in the pantry list to open its detail page. You will see:
+Tap any item's name to open its detail page. You will see:
 
 - All the item's details (category, sizes, typical price, notes)
 - **Average price paid** — calculated from all recorded purchases of this item
-- **Times purchased** — how many times this item has appeared on the shopping list
-  and been marked purchased
-- **Shopping history** — a list of every time this item was on the list, who requested
-  it, who bought it, the size, quantity, and price paid
+- **Times purchased** — how many times this item has been marked purchased
+- **Shopping history** — every time this item was on the list, who requested it, who
+  bought it, the size, quantity, and price paid
 
 **Editing an item (admin only):**
 Tap **Edit** on the detail page to change the name, brand, category, sizes, default
 size, typical price, or notes. Tap **Save** when done.
 
 **Deleting an item (admin only):**
-Tap **Delete** to remove the item from the pantry. Items that are currently on the
+Tap **Delete** to remove the item from the store catalogue. Items currently on the
 shopping list are not affected.
 
 ---
@@ -229,7 +281,7 @@ The four summary cards show:
 | **Items on list** | How many items are currently waiting to be bought |
 | **Purchased this month** | Number of items marked "Got it" since the 1st of this month |
 | **Spent this month** | Total spend recorded this month (only counts purchases where a price was entered) |
-| **Pantry items** | Total number of items in the pantry catalogue |
+| **Store items** | Total number of items in the store catalogue |
 
 Below the cards, **Recent purchases** shows the last 10 items that were marked as
 purchased, with who bought them and the price paid.
@@ -275,9 +327,9 @@ It is never modified or deleted and is useful for reviewing household spend over
 | `item_added_to_list` | Someone adds an item to the shopping list |
 | `item_purchased` | Someone taps Got it (includes item name, size, quantity, price paid) |
 | `item_removed_from_list` | An item is removed without being purchased |
-| `pantry_item_created` | A new item is added to the pantry |
-| `pantry_item_updated` | A pantry item is edited |
-| `pantry_item_deleted` | A pantry item is deleted |
+| `pantry_item_created` | A new item is added to the store catalogue |
+| `pantry_item_updated` | A store item is edited |
+| `pantry_item_deleted` | A store item is deleted |
 | `db_backup` | An admin downloads a database backup |
 | `db_restore` | An admin restores from a backup |
 | `db_cleared` | An admin clears all application data |
@@ -307,10 +359,10 @@ This page lets you back up, restore, and reset the database.
 
 Tap **Download backup** to download a ZIP file containing the database. Store this
 file somewhere safe (a cloud folder, email it to yourself, etc.). The filename
-includes today's date — e.g. `shopping-list-backup-2026-05-19.zip`.
+includes today's date — e.g. `shopping-list-backup-2026-05-24.zip`.
 
-Backups include all data: the pantry catalogue, shopping history, event log, and user
-accounts.
+Backups include all data: the store catalogue, shopping history, cupboard state,
+event log, and user accounts.
 
 **Restore:**
 
@@ -326,9 +378,9 @@ To restore from a backup:
 
 **Clear all data:**
 
-Tap **Clear all data** to permanently delete all pantry items, shopping list entries,
-and event log records. User accounts are kept. This is intended for a full reset
-(e.g. starting fresh after testing).
+Tap **Clear all data** to permanently delete all store items, shopping list entries,
+cupboard items, and event log records. User accounts are kept. This is intended for
+a full reset (e.g. starting fresh after testing).
 
 > **Warning:** This cannot be undone. Download a backup first.
 
@@ -350,7 +402,7 @@ and event log records. User accounts are kept. This is intended for a full reset
 - Tap **Got it** as you put each item in your trolley so other family members can see
   the list updating in real time.
 - If you pay a price you want to remember (e.g. an unusual special), enter it in the
-  price field when you tap Got it. It will update the typical price shown in the pantry.
+  price field when you tap Got it. It will update the typical price shown in the store.
 - If an item is unavailable at this shop, leave it on the list — someone else can
   pick it up elsewhere.
 
@@ -380,21 +432,23 @@ and another is at home adding more items, both changes appear immediately when e
 person refreshes the page.
 
 **What happens if I accidentally tap Got it?**
-The purchase is recorded. Contact an administrator — they can see the event log but
-there is no undo button built in. The item can be added back to the list manually.
+The purchase is recorded and the item moves to the Cupboard. Contact an administrator —
+they can see the event log but there is no undo button built in. The item can be added
+back to the list manually.
 
-**Why can't I add a new pantry item?**
-Only administrators can add items to the pantry. Ask your household administrator to
-add it, or ask them to give your account admin access.
+**Why can't I add a new store item?**
+Any logged-in user can add new items to the Store catalogue using the **+ New item**
+button. Editing or deleting existing items is admin-only.
 
 **Can I see what we spent last month?**
 Yes. Go to **Event Log** (admin only), set the event type to `item_purchased`, set the
 date range to last month, and tap **Export CSV**. The spreadsheet will show every
 item purchased, the price paid, and who bought it.
 
-**The item I want isn't in the pantry — what do I do?**
-Go to **Pantry → + New item**, fill in the details, and save. Then go back to
-**Shopping List → + Add item** and search for the item you just added.
+**The item I want isn't in the store — what do I do?**
+Go to **Store → + New item**, fill in the details, and save. Then go back to
+**Shopping List → + Add item** and search for the item you just added. Or use the
+**+ Add** button directly from the Store page to add it to the list in one step.
 
 **How do I access the app away from home?**
 The app is exposed via Tailscale Funnel, which means it has a public web address that
@@ -405,6 +459,11 @@ software is required — just open the URL in your phone browser.
 There is no self-service password change currently built in. Ask your administrator to
 delete your account and create a new one, or to reset your password directly in the
 database.
+
+**What is the Cupboard for?**
+The Cupboard tracks what you physically have at home. Items land there automatically
+when you press Got it on the shopping list. When you use the last of something, press
+**Used up** and the app will offer to add it straight back onto the shopping list.
 
 ---
 

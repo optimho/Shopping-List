@@ -83,10 +83,10 @@ export default function Dashboard() {
           isText
         />
         <StatCard
-          label="Pantry items"
+          label="Store items"
           value={stats?.pantryCount ?? 0}
           color="gray"
-          link="/pantry"
+          link="/store"
         />
       </div>
 

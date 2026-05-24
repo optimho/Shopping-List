@@ -137,8 +137,8 @@ list.post("/:id/purchase", async (c) => {
   const session = await getSession(c.req.raw);
   if (!session) return c.json({ error: "Unauthorized" }, 401);
 
-  const listItem = await get<{ id: string; pantryItemId: string; status: string }>(
-    "SELECT id, pantryItemId, status FROM shopping_list WHERE id = ? AND deletedAt IS NULL",
+  const listItem = await get<{ id: string; pantryItemId: string; status: string; quantity: number; size: string | null }>(
+    "SELECT id, pantryItemId, status, quantity, size FROM shopping_list WHERE id = ? AND deletedAt IS NULL",
     [c.req.param("id")]
   );
   if (!listItem) return c.json({ error: "Not found" }, 404);
@@ -176,6 +176,24 @@ list.post("/:id/purchase", async (c) => {
     actorId: session.user.id,
     detail: { itemName: pantryItem?.name, brand: pantryItem?.brand, pricePaid },
   });
+
+  // Upsert into cupboard — merge by pantryItemId + size
+  const itemSize = listItem.size ?? null;
+  const existing = await get<{ id: string; quantity: number }>(
+    "SELECT id, quantity FROM cupboard_items WHERE pantryItemId = ? AND (size IS ? OR size = ?)",
+    [listItem.pantryItemId, itemSize, itemSize]
+  );
+  if (existing) {
+    await run(
+      "UPDATE cupboard_items SET quantity = ?, updatedAt = ? WHERE id = ?",
+      [existing.quantity + listItem.quantity, now, existing.id]
+    );
+  } else {
+    await run(
+      "INSERT INTO cupboard_items (id, pantryItemId, name, brand, size, quantity, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [nanoid(), listItem.pantryItemId, pantryItem?.name ?? "", pantryItem?.brand ?? null, itemSize, listItem.quantity, now, now]
+    );
+  }
 
   return c.json({ ok: true });
 });

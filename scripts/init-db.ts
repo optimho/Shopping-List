@@ -106,11 +106,23 @@ CREATE TABLE IF NOT EXISTS event_log (
   updatedAt  TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS cupboard_items (
+  id            TEXT PRIMARY KEY,
+  pantryItemId  TEXT NOT NULL,
+  name          TEXT NOT NULL,
+  brand         TEXT,
+  size          TEXT,
+  quantity      INTEGER NOT NULL DEFAULT 1,
+  createdAt     TEXT NOT NULL,
+  updatedAt     TEXT NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_pantry_name     ON pantry_items(name);
 CREATE INDEX IF NOT EXISTS idx_pantry_category ON pantry_items(category);
 CREATE INDEX IF NOT EXISTS idx_list_status     ON shopping_list(status);
 CREATE INDEX IF NOT EXISTS idx_event_type      ON event_log(eventType);
 CREATE INDEX IF NOT EXISTS idx_event_created   ON event_log(createdAt);
+CREATE INDEX IF NOT EXISTS idx_cupboard_pantry ON cupboard_items(pantryItemId);
 `);
 
 console.log("Database initialised successfully.");

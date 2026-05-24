@@ -5,8 +5,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ShoppingList from "./pages/ShoppingList";
-import Pantry from "./pages/Pantry";
-import PantryItem from "./pages/PantryItem";
+import Store from "./pages/Store";
+import StoreItem from "./pages/StoreItem";
+import Cupboard from "./pages/Cupboard";
 import Users from "./pages/Users";
 import Events from "./pages/admin/Events";
 import Database from "./pages/admin/Database";
@@ -68,8 +69,9 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/list" element={<ProtectedRoute><ShoppingList /></ProtectedRoute>} />
-          <Route path="/pantry" element={<ProtectedRoute><Pantry /></ProtectedRoute>} />
-          <Route path="/pantry/:id" element={<ProtectedRoute><PantryItem /></ProtectedRoute>} />
+          <Route path="/cupboard" element={<ProtectedRoute><Cupboard /></ProtectedRoute>} />
+          <Route path="/store" element={<ProtectedRoute><Store /></ProtectedRoute>} />
+          <Route path="/store/:id" element={<ProtectedRoute><StoreItem /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute adminOnly><Users /></ProtectedRoute>} />
           <Route path="/admin/events" element={<ProtectedRoute adminOnly><Events /></ProtectedRoute>} />
           <Route path="/admin/database" element={<ProtectedRoute adminOnly><Database /></ProtectedRoute>} />
