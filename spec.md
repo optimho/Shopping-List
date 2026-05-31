@@ -229,6 +229,7 @@ Users can register themselves at `/register` but their role defaults to `'user'`
 |--------|------|------|-------------|
 | GET | `/api/store` | User | List/search store items (`?search=`, `?category=`) |
 | GET | `/api/store/categories` | User | Distinct category list |
+| GET | `/api/store/export` | Admin | Download all store items as CSV (sizes pipe-separated, import-compatible) |
 | POST | `/api/store` | User | Add new store item |
 | POST | `/api/store/import` | Admin | Bulk-import items from a JSON array (parsed from CSV) |
 | GET | `/api/store/:id` | User | Single store item + purchase history |

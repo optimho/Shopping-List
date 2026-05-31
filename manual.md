@@ -223,6 +223,10 @@ add panel without leaving the Store page:
 3. Optionally add a **note**.
 4. Tap **Add to list** — the item goes straight onto the shopping list.
 
+### Exporting the store catalogue to CSV (admin only)
+
+Tap **Export CSV** at the top of the Store page to download all current store items as a CSV file. The file uses the same format as the import template (sizes pipe-separated), so you can export, edit in a spreadsheet, and re-import.
+
 ### Importing items from a CSV file (admin only)
 
 If you have a spreadsheet of items to add in bulk, you can import them all at once using a CSV file.
