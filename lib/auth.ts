@@ -1,12 +1,19 @@
 import { betterAuth } from "better-auth";
 import { Database } from "bun:sqlite";
 
+let _authDb: InstanceType<typeof Database> | null = null;
 let _auth: ReturnType<typeof betterAuth> | null = null;
+
+export function closeAuthDb(): void {
+  _auth = null;
+  if (_authDb) { _authDb.close(); _authDb = null; }
+}
 
 function getAuth() {
   if (!_auth) {
+    _authDb = new Database("data/app.db");
     _auth = betterAuth({
-      database: new Database("data/app.db") as unknown as Parameters<typeof betterAuth>[0]["database"],
+      database: _authDb as unknown as Parameters<typeof betterAuth>[0]["database"],
       emailAndPassword: { enabled: true },
       trustedOrigins: [
         "http://localhost:3000",

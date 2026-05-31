@@ -1,9 +1,10 @@
 import { Hono } from "hono";
 import { getSession } from "../../lib/session";
-import { run, closeDb } from "../../lib/db";
+import { run, execDirect, closeDb } from "../../lib/db";
+import { closeAuthDb } from "../../lib/auth";
 import { logEvent } from "../../lib/event-log";
 import { zipSync, unzipSync } from "fflate";
-import { readFileSync, writeFileSync, unlinkSync, existsSync } from "fs";
+import { readFileSync, unlinkSync, renameSync } from "fs";
 
 const adminDb = new Hono();
 
@@ -15,9 +16,13 @@ adminDb.get("/backup", async (c) => {
   if (!session) return c.json({ error: "Unauthorized" }, 401);
   if (session.user.role !== "admin") return c.json({ error: "Forbidden" }, 403);
 
-  // Flush all WAL data into the main file before reading it
-  await run("PRAGMA wal_checkpoint(TRUNCATE)");
-  const dbBytes = readFileSync("data/app.db");
+  // VACUUM INTO creates a consistent snapshot that includes all committed WAL
+  // data, even if other connections prevent a full WAL checkpoint.
+  const tempPath = "data/app.db.backup_temp";
+  try { unlinkSync(tempPath); } catch {}
+  execDirect(`VACUUM INTO '${tempPath}'`);
+  const dbBytes = readFileSync(tempPath);
+  unlinkSync(tempPath);
   const zip = zipSync({ "app.db": new Uint8Array(dbBytes) });
   const filename = `shopping-list-backup-${new Date().toISOString().slice(0, 10)}.zip`;
 
@@ -56,17 +61,21 @@ adminDb.post("/restore", async (c) => {
   const dbFile = unzipped["app.db"];
   if (!dbFile) return c.json({ error: "app.db not found in ZIP" }, 400);
 
+  // Write to a temp file then atomically rename into place.
+  // Bun's SQLite mmaps the DB file; even after db.close(), the mmap may linger
+  // until GC. Truncating app.db in-place while that mmap exists corrupts it.
+  // renameSync replaces the directory entry without touching the old inode, so
+  // any surviving mmap keeps reading valid (old) data while new connections
+  // see the restored file.
   closeDb();
-  writeFileSync("data/app.db", dbFile);
-  // Remove WAL and SHM files so they aren't applied to the restored DB on next open
-  if (existsSync("data/app.db-wal")) unlinkSync("data/app.db-wal");
-  if (existsSync("data/app.db-shm")) unlinkSync("data/app.db-shm");
-
-  await logEvent({
-    eventType: "db_restore",
-    actorName: session.user.name,
-    actorId: session.user.id,
-  });
+  closeAuthDb();
+  const tempPath = "data/app.db.restore_temp";
+  try { unlinkSync(tempPath); } catch {}
+  await Bun.write(tempPath, dbFile);
+  // Remove WAL/SHM that belong to the old DB — new DB starts clean without them
+  try { unlinkSync("data/app.db-wal"); } catch {}
+  try { unlinkSync("data/app.db-shm"); } catch {}
+  renameSync(tempPath, "data/app.db");
 
   return c.json({ ok: true });
 });

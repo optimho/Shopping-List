@@ -31,3 +31,7 @@ export async function get<T>(sql: string, params: SQLQueryBindings[] = []): Prom
 export async function run(sql: string, params: SQLQueryBindings[] = []): Promise<void> {
   getDb().query(sql).run(...params);
 }
+
+export function execDirect(sql: string): void {
+  getDb().exec(sql);
+}
