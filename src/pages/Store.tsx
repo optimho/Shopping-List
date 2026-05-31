@@ -10,6 +10,7 @@ interface PantryItem {
   sizes: string | null;
   defaultSize: string | null;
   typicalPrice: number | null;
+  notes: string | null;
 }
 
 export default function Pantry() {
@@ -23,8 +24,9 @@ export default function Pantry() {
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // New item form (admin only)
+  // New/edit item form
   const [formOpen, setFormOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<PantryItem | null>(null);
   const [formName, setFormName] = useState("");
   const [formBrand, setFormBrand] = useState("");
   const [formCategory, setFormCategory] = useState("");
@@ -85,6 +87,67 @@ export default function Pantry() {
     } else {
       const data = await res.json();
       setFormError(data.error ?? "Failed to create item");
+    }
+  }
+
+  function closeForm() {
+    setFormOpen(false);
+    setEditingItem(null);
+    setFormName(""); setFormBrand(""); setFormCategory("");
+    setFormSizes(""); setFormDefaultSize(""); setFormTypicalPrice(""); setFormNotes("");
+    setFormError("");
+  }
+
+  function openEdit(item: PantryItem) {
+    setEditingItem(item);
+    setFormName(item.name);
+    setFormBrand(item.brand ?? "");
+    setFormCategory(item.category ?? "");
+    const sizes = item.sizes ? JSON.parse(item.sizes) as string[] : [];
+    setFormSizes(sizes.join(", "));
+    setFormDefaultSize(item.defaultSize ?? "");
+    setFormTypicalPrice(item.typicalPrice != null ? String(item.typicalPrice) : "");
+    setFormNotes(item.notes ?? "");
+    setFormError("");
+    setFormOpen(true);
+  }
+
+  async function handleUpdate() {
+    if (!editingItem) return;
+    if (!formName.trim()) { setFormError("Name is required"); return; }
+    setSaving(true);
+    setFormError("");
+    const sizes = formSizes.split(",").map((s) => s.trim()).filter(Boolean);
+    const res = await fetch(`/api/store/${editingItem.id}`, {
+      method: "PUT",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: formName.trim(),
+        brand: formBrand.trim() || null,
+        category: formCategory.trim() || null,
+        sizes: sizes.length ? sizes : null,
+        defaultSize: formDefaultSize.trim() || null,
+        typicalPrice: formTypicalPrice ? Number(formTypicalPrice) : null,
+        notes: formNotes.trim() || null,
+      }),
+    });
+    setSaving(false);
+    if (res.ok) {
+      closeForm();
+      load();
+    } else {
+      const data = await res.json();
+      setFormError(data.error ?? "Failed to save");
+    }
+  }
+
+  async function handleDelete(item: PantryItem) {
+    if (!confirm(`Delete "${item.name}" from the store?`)) return;
+    const res = await fetch(`/api/store/${item.id}`, { method: "DELETE", credentials: "include" });
+    if (res.ok) {
+      closeForm();
+      load();
     }
   }
 
@@ -199,12 +262,22 @@ export default function Pantry() {
                     {item.typicalPrice != null ? `$${item.typicalPrice.toFixed(2)}` : "—"}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={(e) => { e.stopPropagation(); openAdd(item); }}
-                      className="text-indigo-600 hover:text-indigo-800 text-xs font-medium border border-indigo-200 hover:border-indigo-400 rounded px-2 py-1 transition-colors whitespace-nowrap"
-                    >
-                      + Add
-                    </button>
+                    <div className="flex items-center justify-end gap-2">
+                      {isAdmin && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); openEdit(item); }}
+                          className="text-gray-500 hover:text-gray-700 text-xs font-medium border border-gray-200 hover:border-gray-400 rounded px-2 py-1 transition-colors whitespace-nowrap"
+                        >
+                          Edit
+                        </button>
+                      )}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); openAdd(item); }}
+                        className="text-indigo-600 hover:text-indigo-800 text-xs font-medium border border-indigo-200 hover:border-indigo-400 rounded px-2 py-1 transition-colors whitespace-nowrap"
+                      >
+                        + Add
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -278,13 +351,13 @@ export default function Pantry() {
         </div>
       )}
 
-      {/* New item modal */}
+      {/* New / edit item modal */}
       {formOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col">
             <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
-              <h2 className="font-semibold text-gray-800">New store item</h2>
-              <button onClick={() => setFormOpen(false)} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+              <h2 className="font-semibold text-gray-800">{editingItem ? "Edit store item" : "New store item"}</h2>
+              <button onClick={closeForm} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
             </div>
 
             <div className="flex-1 overflow-y-auto p-5 space-y-4">
@@ -315,13 +388,22 @@ export default function Pantry() {
               </Field>
             </div>
 
-            <div className="px-5 py-4 border-t border-gray-200">
+            <div className="px-5 py-4 border-t border-gray-200 flex gap-3">
+              {editingItem && (
+                <button
+                  onClick={() => handleDelete(editingItem)}
+                  disabled={saving}
+                  className="flex-none border border-red-200 text-red-600 hover:bg-red-50 font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  Delete
+                </button>
+              )}
               <button
-                onClick={handleCreate}
+                onClick={editingItem ? handleUpdate : handleCreate}
                 disabled={saving}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition-colors disabled:opacity-50"
+                className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition-colors disabled:opacity-50"
               >
-                {saving ? "Saving…" : "Create item"}
+                {saving ? "Saving…" : editingItem ? "Save changes" : "Create item"}
               </button>
             </div>
           </div>
