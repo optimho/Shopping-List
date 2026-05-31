@@ -8,7 +8,7 @@ import { readFileSync, unlinkSync, renameSync } from "fs";
 
 const adminDb = new Hono();
 
-const TABLES_TO_CLEAR = ["shopping_list", "pantry_items", "event_log"];
+const TABLES_TO_CLEAR = ["shopping_list", "pantry_items", "cupboard_items", "event_log"];
 
 // GET /api/admin/db/backup — download ZIP of the database
 adminDb.get("/backup", async (c) => {
