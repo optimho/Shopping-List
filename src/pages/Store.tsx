@@ -325,12 +325,20 @@ export default function Pantry() {
         <h1 className="text-2xl font-bold text-gray-900">Store</h1>
         <div className="flex items-center gap-2">
           {isAdmin && (
-            <button
-              onClick={() => setImportOpen(true)}
-              className="border border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-            >
-              Import CSV
-            </button>
+            <>
+              <button
+                onClick={() => { window.location.href = "/api/store/export"; }}
+                className="border border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+              >
+                Export CSV
+              </button>
+              <button
+                onClick={() => setImportOpen(true)}
+                className="border border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+              >
+                Import CSV
+              </button>
+            </>
           )}
           <button
             onClick={() => setFormOpen(true)}

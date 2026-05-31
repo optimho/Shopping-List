@@ -46,6 +46,44 @@ pantry.get("/", async (c) => {
   return c.json(rows);
 });
 
+// GET /api/store/export — download all store items as CSV (admin only)
+pantry.get("/export", async (c) => {
+  const session = await getSession(c.req.raw);
+  if (!session) return c.json({ error: "Unauthorized" }, 401);
+  if (session.user.role !== "admin") return c.json({ error: "Forbidden" }, 403);
+
+  const rows = await query<PantryItem>(
+    "SELECT * FROM pantry_items WHERE deletedAt IS NULL ORDER BY name ASC"
+  );
+
+  const escape = (v: unknown) => {
+    const s = v == null ? "" : String(v);
+    return `"${s.replace(/"/g, '""')}"`;
+  };
+
+  const headers = ["name", "brand", "category", "sizes", "defaultSize", "typicalPrice", "notes"];
+  const csv = [
+    headers.join(","),
+    ...rows.map((row) => [
+      escape(row.name),
+      escape(row.brand),
+      escape(row.category),
+      escape(row.sizes ? (JSON.parse(row.sizes) as string[]).join("|") : ""),
+      escape(row.defaultSize),
+      escape(row.typicalPrice),
+      escape(row.notes),
+    ].join(",")),
+  ].join("\n");
+
+  const date = new Date().toISOString().slice(0, 10);
+  return new Response(csv, {
+    headers: {
+      "Content-Type": "text/csv",
+      "Content-Disposition": `attachment; filename="store-items-${date}.csv"`,
+    },
+  });
+});
+
 // GET /api/pantry/categories — distinct categories
 pantry.get("/categories", async (c) => {
   const session = await getSession(c.req.raw);
