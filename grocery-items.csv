@@ -1,0 +1,121 @@
+name,brand,category,sizes,defaultSize,typicalPrice,notes
+Milk,Anchor,dairy,1L|2L|3L,2L,4.50,
+Trim Milk,Anchor,dairy,1L|2L,2L,4.50,
+Butter,Anchor,dairy,250g|500g,250g,4.99,
+Cream Cheese,Philadelphia,dairy,250g,250g,5.50,
+Sour Cream,Meadow Fresh,dairy,250ml|500ml,250ml,3.20,
+Tasty Cheese,Mainland,dairy,500g|1kg,500g,10.99,
+Colby Cheese,Mainland,dairy,500g|1kg,500g,10.50,
+Edam Cheese,Mainland,dairy,500g|1kg,500g,9.99,
+Greek Yoghurt,Anchor,dairy,500g|1kg,500g,5.99,
+Greek Yoghurt,Chobani,dairy,170g|907g,907g,7.50,
+Eggs,Farmer Brown,dairy,6 pack|12 pack,12 pack,8.99,Free range
+Cream,Anchor,dairy,300ml,300ml,3.50,
+Ice Cream,Tip Top,frozen,2L,2L,8.50,
+Bread,Vogel's,bakery,700g,700g,5.50,Mixed grain
+Bread,Tip Top,bakery,700g,700g,3.00,White sandwich
+Sourdough,Bakers Delight,bakery,500g,500g,6.99,
+Whole Grain Bread,Freya's,bakery,700g,700g,4.99,
+Pita Bread,Quality Bakers,bakery,6 pack,6 pack,3.50,
+Wraps,Mission,bakery,8 pack,8 pack,4.99,
+Crumpets,Quality Bakers,bakery,6 pack,6 pack,3.50,
+English Muffins,Tip Top,bakery,6 pack,6 pack,3.99,
+Chicken Breast,Tegel,meat,500g|1kg,1kg,12.99,Skinless
+Chicken Thighs,Tegel,meat,500g|1kg,1kg,10.99,Bone-in
+Mince,Lean Beef,meat,500g|1kg,500g,9.99,
+Sausages,Hellers,meat,1kg,1kg,9.99,
+Bacon,Hellers,meat,200g|500g,500g,8.99,
+Ham,Hellers,meat,200g|500g,200g,5.99,Shaved
+Salmon Fillets,,meat,400g,400g,14.99,
+Canned Tuna,Greenseas,pantry,95g|185g,185g,2.50,Springwater
+Bananas,,produce,1kg,1kg,2.99,
+Apples,Granny Smith,produce,1kg,1kg,4.99,
+Tomatoes,,produce,500g|1kg,500g,4.50,
+Baby Spinach,,produce,120g|250g,120g,3.99,
+Broccoli,,produce,1 head,1 head,2.99,
+Carrots,,produce,1kg,1kg,2.50,
+Onions,,produce,1kg,1kg,2.99,
+Garlic,,produce,1 bulb|3 bulbs,3 bulbs,3.50,
+Potatoes,Agria,produce,2kg,2kg,5.99,
+Avocado,,produce,1 each,1 each,2.50,
+Capsicum,,produce,1 each,1 each,2.50,Red
+Cucumber,,produce,1 each,1 each,2.50,
+Courgette,,produce,500g,500g,3.99,
+Sweet Corn,,produce,4 pack,4 pack,3.99,
+Frozen Peas,Wattie's,frozen,500g|1kg,500g,3.99,
+Frozen Corn,Wattie's,frozen,500g,500g,3.99,
+Frozen Chips,McCain,frozen,750g|1kg,1kg,5.99,
+Frozen Pizza,Dr. Oetker,frozen,400g|600g,400g,9.99,
+Peanut Butter,Sanitarium,pantry,375g|750g,375g,5.99,Smooth
+Peanut Butter,Fix & Fogg,pantry,275g,275g,8.99,Good Grind
+Marmite,,pantry,400g,400g,5.99,
+Vegemite,,pantry,380g,380g,5.99,
+Jam,Anathoth,pantry,375g,375g,5.50,Strawberry
+Honey,Comvita,pantry,500g,500g,14.99,
+Tomato Sauce,Wattie's,pantry,575ml,575ml,4.99,
+Pasta Sauce,Leggos,pantry,500g,500g,4.50,
+Olive Oil,Olivado,pantry,500ml|1L,500ml,10.99,Extra virgin
+Coconut Oil,Olivado,pantry,500ml,500ml,9.99,
+Soy Sauce,Kikkoman,pantry,150ml|500ml,150ml,4.50,
+Sweet Chilli Sauce,Kaitaia Fire,pantry,375ml,375ml,5.99,
+Baked Beans,Wattie's,pantry,420g|840g,420g,1.99,
+Chickpeas,Delmaine,pantry,400g,400g,2.50,Canned
+Black Beans,Delmaine,pantry,400g,400g,2.50,Canned
+Pasta,Barilla,pantry,500g,500g,3.50,Penne
+Pasta,Barilla,pantry,500g,500g,3.50,Spaghetti
+Rice,SunRice,pantry,1kg|2kg,1kg,4.99,Long grain
+Rolled Oats,Harraways,pantry,500g|1kg,1kg,4.99,
+Weetbix,Sanitarium,pantry,430g|750g,750g,5.50,
+Weet-bix,Sanitarium,pantry,430g|750g,750g,5.50,
+Muesli,Hubbards,pantry,500g|800g,500g,6.99,
+Cornflakes,Kellogg's,pantry,500g,500g,5.99,
+Plain Flour,Champion,pantry,1.5kg|5kg,1.5kg,3.50,
+Self Raising Flour,Champion,pantry,1.5kg,1.5kg,3.50,
+Caster Sugar,Chelsea,pantry,500g|1kg,1kg,3.99,
+Brown Sugar,Chelsea,pantry,500g|1kg,500g,3.50,
+Baking Soda,McKenzie's,pantry,200g,200g,2.50,
+Cocoa Powder,Cadbury,pantry,250g,250g,5.99,
+Vanilla Extract,Queen,pantry,50ml,50ml,3.99,
+Breadcrumbs,Gregg's,pantry,400g,400g,3.50,
+Chicken Stock,Campbells,pantry,500ml|1L,1L,4.99,
+Vegetable Stock,Campbells,pantry,500ml|1L,1L,4.50,
+Canned Tomatoes,Wattie's,pantry,400g|800g,400g,2.50,
+Coconut Cream,Trident,pantry,400ml,400ml,2.50,
+Coconut Milk,Trident,pantry,400ml,400ml,2.50,
+Corn Chips,Doritos,pantry,150g|200g,150g,3.99,
+Crackers,Griffin's,pantry,250g,250g,3.99,Malt
+Rice Cakes,Ceres,pantry,130g,130g,3.50,
+Chocolate,Whittaker's,pantry,100g|200g|250g,250g,4.99,
+Milo,,beverages,200g|400g|750g,400g,7.99,
+Coffee,L'OR,beverages,250g,250g,12.99,Ground
+Instant Coffee,Moccona,beverages,100g|200g,100g,9.99,
+Tea Bags,Dilmah,beverages,50 pack|100 pack,100 pack,5.99,
+Orange Juice,Charlie's,beverages,1L|2L,1L,5.50,No added sugar
+Apple Juice,Charlie's,beverages,1L,1L,5.50,
+Sparkling Water,Antipodes,beverages,1L,1L,3.99,
+Kombucha,Good Buzz,beverages,330ml|1L,330ml,4.99,
+Bleach,Jik,cleaning,500ml|1L,1L,3.99,
+Dishwash Liquid,Morning Fresh,cleaning,400ml|800ml,400ml,3.99,
+Dishwasher Tablets,Finish,cleaning,30 pack|60 pack,30 pack,12.99,
+Laundry Liquid,Persil,cleaning,1.5L|3L,1.5L,12.99,
+Fabric Softener,Comfort,cleaning,1L,1L,7.99,
+Toilet Cleaner,Harpic,cleaning,500ml,500ml,4.99,
+Multi-surface Spray,Flash,cleaning,500ml,500ml,4.50,
+Bathroom Spray,Domestos,cleaning,500ml,500ml,4.99,
+Toilet Paper,Sorbent,cleaning,12 pack|24 pack,12 pack,9.99,3-ply
+Paper Towels,Handee Ultra,cleaning,3 pack|6 pack,3 pack,5.99,
+Glad Wrap,,cleaning,30m|60m,30m,4.99,
+Ziplock Bags,Multix,cleaning,20 pack,20 pack,4.50,Sandwich
+Aluminium Foil,Multix,cleaning,30m,30m,4.99,
+Rubbish Bags,Glad,cleaning,30 pack|50 pack,30 pack,7.99,
+Shampoo,Pantene,personal care,200ml|400ml,400ml,7.99,
+Conditioner,Pantene,personal care,200ml|400ml,400ml,7.99,
+Body Wash,Dove,personal care,400ml|800ml,400ml,6.99,
+Soap,Dove,personal care,4 pack,4 pack,5.99,
+Deodorant,Rexona,personal care,150ml,150ml,5.99,
+Toothpaste,Colgate,personal care,100ml|175ml,175ml,4.99,
+Toothbrush,Oral-B,personal care,2 pack,2 pack,7.99,
+Razor,Gillette,personal care,4 pack,4 pack,14.99,
+Moisturiser,Nivea,personal care,200ml,200ml,7.99,
+Sunscreen,Banana Boat,personal care,200ml,200ml,14.99,SPF50
+Hand Soap,Carex,personal care,250ml|500ml,250ml,3.99,

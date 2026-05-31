@@ -116,7 +116,7 @@ The pantry is the household's catalogue of items it buys. An item is added once 
 | `createdAt` | TEXT | When the event occurred |
 | `updatedAt` | TEXT | Always equal to `createdAt` |
 
-**Event types:** `'item_added_to_list'` · `'item_purchased'` · `'item_removed_from_list'` · `'pantry_item_created'` · `'pantry_item_updated'` · `'pantry_item_deleted'` · `'user_login'` · `'db_backup'` · `'db_restore'`
+**Event types:** `'item_added_to_list'` · `'item_purchased'` · `'item_removed_from_list'` · `'pantry_item_created'` · `'pantry_item_updated'` · `'pantry_item_deleted'` · `'pantry_items_imported'` · `'user_login'` · `'db_backup'` · `'db_restore'`
 
 > The event log is **append-only** — entries are never modified or deleted. This makes it a reliable purchase history for reviewing household spend over time.
 
@@ -230,6 +230,7 @@ Users can register themselves at `/register` but their role defaults to `'user'`
 | GET | `/api/store` | User | List/search store items (`?search=`, `?category=`) |
 | GET | `/api/store/categories` | User | Distinct category list |
 | POST | `/api/store` | User | Add new store item |
+| POST | `/api/store/import` | Admin | Bulk-import items from a JSON array (parsed from CSV) |
 | GET | `/api/store/:id` | User | Single store item + purchase history |
 | PUT | `/api/store/:id` | User | Update store item |
 | DELETE | `/api/store/:id` | Admin | Soft-delete store item |

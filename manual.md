@@ -223,6 +223,21 @@ add panel without leaving the Store page:
 3. Optionally add a **note**.
 4. Tap **Add to list** — the item goes straight onto the shopping list.
 
+### Importing items from a CSV file (admin only)
+
+If you have a spreadsheet of items to add in bulk, you can import them all at once using a CSV file.
+
+1. Tap **Import CSV** at the top of the Store page (visible to admins only).
+2. The import modal opens. Tap **Download template CSV** to get a pre-formatted file you can fill in.
+3. Fill in the template in Excel or Google Sheets:
+   - `name` is required; all other columns are optional
+   - Use `|` to separate multiple sizes in the `sizes` column — e.g. `375g|750g|1kg`
+4. Save the file as CSV and upload it using the **Choose file** button.
+5. A preview table shows all the rows that will be imported. Check it, then tap **Import N items**.
+6. The summary screen shows how many items were imported and how many were skipped (items are skipped if a store item with the same name already exists).
+
+> A ready-to-use list of common NZ grocery items is included in the project at `grocery-items.csv`.
+
 ### Adding a new store item
 
 Any logged-in user can add new items to the Store catalogue.
