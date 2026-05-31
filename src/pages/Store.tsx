@@ -13,6 +13,16 @@ interface PantryItem {
   notes: string | null;
 }
 
+interface ParsedRow {
+  name: string;
+  brand: string;
+  category: string;
+  sizes: string[];
+  defaultSize: string;
+  typicalPrice: number | null;
+  notes: string;
+}
+
 export default function Pantry() {
   const { user } = useAuth();
   const isAdmin = user?.role === "admin";
@@ -45,6 +55,14 @@ export default function Pantry() {
   const [addSaving, setAddSaving] = useState(false);
   const [addError, setAddError] = useState("");
   const [addSuccess, setAddSuccess] = useState(false);
+
+  // Import modal
+  const [importOpen, setImportOpen] = useState(false);
+  const [importStep, setImportStep] = useState<"idle" | "preview" | "done">("idle");
+  const [importRows, setImportRows] = useState<ParsedRow[]>([]);
+  const [importFileError, setImportFileError] = useState("");
+  const [importResult, setImportResult] = useState<{ imported: number; skipped: number; skippedNames: string[] } | null>(null);
+  const [importing, setImporting] = useState(false);
 
   async function load() {
     const [itemsRes, catsRes] = await Promise.all([
@@ -151,6 +169,121 @@ export default function Pantry() {
     }
   }
 
+  function parseStoreCsv(text: string): ParsedRow[] {
+    const lines = text.split(/\r?\n/);
+    if (lines.length < 2) return [];
+
+    function parseLine(line: string): string[] {
+      const fields: string[] = [];
+      let current = "";
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+          if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
+          else inQuotes = !inQuotes;
+        } else if (ch === "," && !inQuotes) {
+          fields.push(current); current = "";
+        } else {
+          current += ch;
+        }
+      }
+      fields.push(current);
+      return fields;
+    }
+
+    const headers = parseLine(lines[0]).map((h) => h.trim().toLowerCase());
+    const idx = (name: string) => headers.indexOf(name);
+    const nameIdx = idx("name");
+    if (nameIdx === -1) return [];
+
+    const rows: ParsedRow[] = [];
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      const f = parseLine(line);
+      const name = (f[nameIdx] ?? "").trim();
+      if (!name) continue;
+      const sizesRaw = (f[idx("sizes")] ?? "").trim();
+      const priceRaw = (f[idx("typicalprice")] ?? "").trim();
+      const priceNum = Number(priceRaw);
+      rows.push({
+        name,
+        brand: (f[idx("brand")] ?? "").trim(),
+        category: (f[idx("category")] ?? "").trim(),
+        sizes: sizesRaw ? sizesRaw.split("|").map((s) => s.trim()).filter(Boolean) : [],
+        defaultSize: (f[idx("defaultsize")] ?? "").trim(),
+        typicalPrice: priceRaw && !isNaN(priceNum) ? priceNum : null,
+        notes: (f[idx("notes")] ?? "").trim(),
+      });
+    }
+    return rows;
+  }
+
+  function downloadTemplate() {
+    const csv = [
+      "name,brand,category,sizes,defaultSize,typicalPrice,notes",
+      "Peanut Butter,Sanitarium,pantry,375g|750g,375g,5.99,",
+      "Milk,Anchor,dairy,1L|2L,2L,3.50,",
+    ].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "store-import-template.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function handleImportFile(file: File) {
+    setImportFileError("");
+    const text = await file.text();
+    const rows = parseStoreCsv(text);
+    if (rows.length === 0) {
+      setImportFileError("No valid rows found. Check your file matches the template format.");
+      return;
+    }
+    setImportRows(rows);
+    setImportStep("preview");
+  }
+
+  async function handleImport() {
+    setImporting(true);
+    setImportFileError("");
+    const res = await fetch("/api/store/import", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(importRows.map((r) => ({
+        name: r.name,
+        brand: r.brand || null,
+        category: r.category || null,
+        sizes: r.sizes.length ? r.sizes : null,
+        defaultSize: r.defaultSize || null,
+        typicalPrice: r.typicalPrice,
+        notes: r.notes || null,
+      }))),
+    });
+    setImporting(false);
+    if (res.ok) {
+      const result = await res.json();
+      setImportResult(result);
+      setImportStep("done");
+      load();
+    } else {
+      const data = await res.json();
+      setImportFileError(data.error ?? "Import failed");
+    }
+  }
+
+  function closeImport() {
+    setImportOpen(false);
+    setImportStep("idle");
+    setImportRows([]);
+    setImportFileError("");
+    setImportResult(null);
+  }
+
   function openAdd(item: PantryItem) {
     setAddingItem(item);
     const sizes = item.sizes ? JSON.parse(item.sizes) as string[] : [];
@@ -190,12 +323,22 @@ export default function Pantry() {
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Store</h1>
-        <button
-          onClick={() => setFormOpen(true)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-        >
-          + New item
-        </button>
+        <div className="flex items-center gap-2">
+          {isAdmin && (
+            <button
+              onClick={() => setImportOpen(true)}
+              className="border border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+            >
+              Import CSV
+            </button>
+          )}
+          <button
+            onClick={() => setFormOpen(true)}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+          >
+            + New item
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -404,6 +547,124 @@ export default function Pantry() {
                 {saving ? "Saving…" : editingItem ? "Save changes" : "Create item"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* Import CSV modal */}
+      {importOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+            <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+              <h2 className="font-semibold text-gray-800">Import store items</h2>
+              <button onClick={closeImport} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+            </div>
+
+            {importStep === "idle" && (
+              <>
+                <div className="p-5 space-y-4">
+                  <p className="text-sm text-gray-600">Upload a CSV file to bulk-import items into the Store catalogue.</p>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-xs text-gray-500 space-y-2">
+                    <p className="font-medium text-gray-700">Required CSV format:</p>
+                    <code className="block font-mono text-gray-600">name,brand,category,sizes,defaultSize,typicalPrice,notes</code>
+                    <p>Use <code className="bg-gray-100 px-1 rounded">|</code> to separate multiple sizes — e.g. <code className="bg-gray-100 px-1 rounded">375g|750g|1kg</code></p>
+                    <p>Items with the same name as an existing store item will be skipped.</p>
+                  </div>
+                  <button onClick={downloadTemplate} className="text-indigo-600 hover:text-indigo-800 text-sm font-medium hover:underline">
+                    Download template CSV
+                  </button>
+                  {importFileError && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-2 text-sm">{importFileError}</div>
+                  )}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Choose CSV file</label>
+                    <input
+                      type="file"
+                      accept=".csv,text/csv"
+                      onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImportFile(f); }}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 file:cursor-pointer"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {importStep === "preview" && (
+              <>
+                <div className="flex-1 overflow-y-auto p-5 space-y-4">
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium text-gray-900">{importRows.length} item{importRows.length !== 1 ? "s" : ""}</span> ready to import. Review then confirm.
+                  </p>
+                  {importFileError && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-2 text-sm">{importFileError}</div>
+                  )}
+                  <div className="overflow-x-auto rounded-lg border border-gray-200">
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="bg-gray-50 border-b border-gray-200">
+                          <th className="text-left px-3 py-2 font-medium text-gray-600">Name</th>
+                          <th className="text-left px-3 py-2 font-medium text-gray-600">Brand</th>
+                          <th className="text-left px-3 py-2 font-medium text-gray-600">Category</th>
+                          <th className="text-left px-3 py-2 font-medium text-gray-600">Sizes</th>
+                          <th className="text-right px-3 py-2 font-medium text-gray-600">Price</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {importRows.map((row, i) => (
+                          <tr key={i} className="hover:bg-gray-50">
+                            <td className="px-3 py-2 font-medium text-gray-900">{row.name}</td>
+                            <td className="px-3 py-2 text-gray-500">{row.brand || "—"}</td>
+                            <td className="px-3 py-2 text-gray-500">{row.category || "—"}</td>
+                            <td className="px-3 py-2 text-gray-500">{row.sizes.join(", ") || "—"}</td>
+                            <td className="px-3 py-2 text-right text-gray-700">
+                              {row.typicalPrice != null ? `$${row.typicalPrice.toFixed(2)}` : "—"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div className="px-5 py-4 border-t border-gray-200 flex gap-3">
+                  <button
+                    onClick={() => { setImportStep("idle"); setImportRows([]); setImportFileError(""); }}
+                    className="flex-none border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-2 px-4 rounded-lg transition-colors"
+                  >
+                    Back
+                  </button>
+                  <button
+                    onClick={handleImport}
+                    disabled={importing}
+                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    {importing ? "Importing…" : `Import ${importRows.length} item${importRows.length !== 1 ? "s" : ""}`}
+                  </button>
+                </div>
+              </>
+            )}
+
+            {importStep === "done" && importResult && (
+              <>
+                <div className="p-8 text-center space-y-3">
+                  <div className="text-5xl">✓</div>
+                  <p className="text-xl font-semibold text-gray-900">
+                    {importResult.imported} item{importResult.imported !== 1 ? "s" : ""} imported
+                  </p>
+                  {importResult.skipped > 0 && (
+                    <p className="text-sm text-gray-500">
+                      {importResult.skipped} skipped (already exist{importResult.skipped === 1 ? "s" : ""}): {importResult.skippedNames.join(", ")}
+                    </p>
+                  )}
+                </div>
+                <div className="px-5 py-4 border-t border-gray-200">
+                  <button
+                    onClick={closeImport}
+                    className="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-2 rounded-lg transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

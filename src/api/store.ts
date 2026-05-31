@@ -100,6 +100,70 @@ pantry.post("/", async (c) => {
   return c.json({ id }, 201);
 });
 
+// POST /api/store/import — bulk import items (admin only)
+pantry.post("/import", async (c) => {
+  const session = await getSession(c.req.raw);
+  if (!session) return c.json({ error: "Unauthorized" }, 401);
+  if (session.user.role !== "admin") return c.json({ error: "Forbidden" }, 403);
+
+  const body = await c.req.json();
+  if (!Array.isArray(body) || body.length === 0)
+    return c.json({ error: "Expected a non-empty array of items" }, 400);
+
+  const now = new Date().toISOString();
+  let imported = 0;
+  const skippedNames: string[] = [];
+  const importedNames: string[] = [];
+
+  for (const item of body) {
+    const name = typeof item.name === "string" ? item.name.trim() : "";
+    if (!name) continue;
+
+    const existing = await get<{ id: string }>(
+      "SELECT id FROM pantry_items WHERE lower(name) = lower(?) AND deletedAt IS NULL",
+      [name]
+    );
+    if (existing) { skippedNames.push(name); continue; }
+
+    const id = nanoid();
+    const sizes = Array.isArray(item.sizes) ? item.sizes : null;
+    await run(
+      `INSERT INTO pantry_items
+         (id, name, brand, category, sizes, defaultSize, typicalPrice, notes, createdByName, createdById, createdAt, updatedAt)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        id,
+        name,
+        typeof item.brand === "string" ? item.brand.trim() || null : null,
+        typeof item.category === "string" ? item.category.trim() || null : null,
+        sizes ? JSON.stringify(sizes) : null,
+        typeof item.defaultSize === "string" ? item.defaultSize.trim() || null : null,
+        item.typicalPrice != null ? Number(item.typicalPrice) : null,
+        typeof item.notes === "string" ? item.notes.trim() || null : null,
+        session.user.name,
+        session.user.id,
+        now,
+        now,
+      ]
+    );
+    imported++;
+    importedNames.push(name);
+  }
+
+  if (imported > 0) {
+    await logEvent({
+      eventType: "pantry_items_imported",
+      entityId: "bulk",
+      entityType: "pantry_item",
+      actorName: session.user.name,
+      actorId: session.user.id,
+      detail: { count: imported, names: importedNames },
+    });
+  }
+
+  return c.json({ imported, skipped: skippedNames.length, skippedNames });
+});
+
 // GET /api/pantry/:id — single item with shopping history
 pantry.get("/:id", async (c) => {
   const session = await getSession(c.req.raw);
