@@ -3,7 +3,7 @@ import { getSession } from "../../lib/session";
 import { run, closeDb } from "../../lib/db";
 import { logEvent } from "../../lib/event-log";
 import { zipSync, unzipSync } from "fflate";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, unlinkSync, existsSync } from "fs";
 
 const adminDb = new Hono();
 
@@ -15,6 +15,8 @@ adminDb.get("/backup", async (c) => {
   if (!session) return c.json({ error: "Unauthorized" }, 401);
   if (session.user.role !== "admin") return c.json({ error: "Forbidden" }, 403);
 
+  // Flush all WAL data into the main file before reading it
+  await run("PRAGMA wal_checkpoint(TRUNCATE)");
   const dbBytes = readFileSync("data/app.db");
   const zip = zipSync({ "app.db": new Uint8Array(dbBytes) });
   const filename = `shopping-list-backup-${new Date().toISOString().slice(0, 10)}.zip`;
@@ -56,6 +58,9 @@ adminDb.post("/restore", async (c) => {
 
   closeDb();
   writeFileSync("data/app.db", dbFile);
+  // Remove WAL and SHM files so they aren't applied to the restored DB on next open
+  if (existsSync("data/app.db-wal")) unlinkSync("data/app.db-wal");
+  if (existsSync("data/app.db-shm")) unlinkSync("data/app.db-shm");
 
   await logEvent({
     eventType: "db_restore",
