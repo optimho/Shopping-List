@@ -259,7 +259,7 @@ Users can register themselves at `/register` but their role defaults to `'user'`
 |--------|------|------|-------------|
 | GET | `/api/admin/db/backup` | Admin | Download ZIP backup — uses `VACUUM INTO` for a consistent WAL-safe snapshot |
 | POST | `/api/admin/db/restore` | Admin | Upload ZIP and restore — closes both DB connections then `renameSync` into place |
-| POST | `/api/admin/db/clear` | Admin | Clear all application data (keeps auth tables) |
+| POST | `/api/admin/db/clear` | Admin | Delete all rows from `shopping_list`, `pantry_items`, `cupboard_items`, `event_log` (keeps auth tables) |
 
 > **WAL mode gotcha:** The app runs two separate SQLite connections — one in `lib/db.ts` and one opened by better-auth in `lib/auth.ts`. Both must be closed before writing a restored DB file. `VACUUM INTO` is used for backup because a plain file read misses WAL data when the second connection holds a read lock. `renameSync` is used for restore (not `Bun.write`) because bun:sqlite mmaps the DB file and truncating it in-place while the mmap lingers corrupts it even after `db.close()`.
 
