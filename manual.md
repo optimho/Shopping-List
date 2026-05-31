@@ -251,7 +251,7 @@ Tap any item's name to open its detail page. You will see:
 - **Shopping history** — every time this item was on the list, who requested it, who
   bought it, the size, quantity, and price paid
 
-**Editing an item (admin only):**
+**Editing an item:**
 Tap the **Edit** button on any row in the Store list, or on the item's detail page.
 A form opens pre-filled with the item's current details — change anything you like
 and tap **Save changes** when done.
@@ -440,7 +440,7 @@ back to the list manually.
 
 **Why can't I add a new store item?**
 Any logged-in user can add new items to the Store catalogue using the **+ New item**
-button. Editing or deleting existing items is admin-only.
+button. Any logged-in user can edit existing items; deleting is admin-only.
 
 **Can I see what we spent last month?**
 Yes. Go to **Event Log** (admin only), set the event type to `item_purchased`, set the

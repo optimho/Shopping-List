@@ -126,8 +126,8 @@ The pantry is the household's catalogue of items it buys. An item is added once 
 
 | Role | Capabilities |
 |------|-------------|
-| **User** | View the shopping list, add items to the shopping list, mark items as purchased (Got it) and record the price paid, add new items to the pantry catalogue, edit pantry items they created, search the pantry |
-| **Admin** | All user capabilities + manage users (add, edit role, reset password, delete), edit or delete any pantry item, remove items from the shopping list without purchasing them, view and export the event log, backup and restore the database |
+| **User** | View the shopping list, add items to the shopping list, mark items as purchased (Got it) and record the price paid, add new items to the store catalogue, edit any store item, search the store |
+| **Admin** | All user capabilities + manage users (add, edit role, reset password, delete), delete any store item, remove items from the shopping list without purchasing them, view and export the event log, backup and restore the database |
 
 Users can register themselves at `/register` but their role defaults to `'user'`. Only an existing admin can elevate a user to admin.
 
@@ -148,7 +148,7 @@ Users can register themselves at `/register` but their role defaults to `'user'`
 |-------|------|-------------|
 | `/dashboard` | Dashboard | Active shopping list count, recently purchased items, quick-add search box |
 | `/list` | Shopping List | Live list of pending items — tap Got it to mark purchased |
-| `/store` | Store | Searchable catalogue of all items; add new items; browse by category; quick-add to list; admin can edit/delete inline |
+| `/store` | Store | Searchable catalogue of all items; add new items; browse by category; quick-add to list; all users can edit inline; admin can also delete |
 | `/store/:id` | Store Item | Detail — sizes, typical price, full purchase history for this item |
 | `/cupboard` | Cupboard | Home inventory; auto-populated on Got it; Used up decrements and prompts re-add |
 
@@ -231,7 +231,7 @@ Users can register themselves at `/register` but their role defaults to `'user'`
 | GET | `/api/store/categories` | User | Distinct category list |
 | POST | `/api/store` | User | Add new store item |
 | GET | `/api/store/:id` | User | Single store item + purchase history |
-| PUT | `/api/store/:id` | Admin | Update store item |
+| PUT | `/api/store/:id` | User | Update store item |
 | DELETE | `/api/store/:id` | Admin | Soft-delete store item |
 
 ### Event Log
