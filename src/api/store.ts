@@ -135,11 +135,10 @@ pantry.get("/:id", async (c) => {
   });
 });
 
-// PUT /api/pantry/:id — update item (admin)
+// PUT /api/pantry/:id — update item (any logged-in user)
 pantry.put("/:id", async (c) => {
   const session = await getSession(c.req.raw);
   if (!session) return c.json({ error: "Unauthorized" }, 401);
-  if (session.user.role !== "admin") return c.json({ error: "Forbidden" }, 403);
 
   const item = await get<{ id: string }>(
     "SELECT id FROM pantry_items WHERE id = ? AND deletedAt IS NULL",

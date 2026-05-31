@@ -263,14 +263,12 @@ export default function Pantry() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      {isAdmin && (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); openEdit(item); }}
-                          className="text-gray-500 hover:text-gray-700 text-xs font-medium border border-gray-200 hover:border-gray-400 rounded px-2 py-1 transition-colors whitespace-nowrap"
-                        >
-                          Edit
-                        </button>
-                      )}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); openEdit(item); }}
+                        className="text-gray-500 hover:text-gray-700 text-xs font-medium border border-gray-200 hover:border-gray-400 rounded px-2 py-1 transition-colors whitespace-nowrap"
+                      >
+                        Edit
+                      </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); openAdd(item); }}
                         className="text-indigo-600 hover:text-indigo-800 text-xs font-medium border border-indigo-200 hover:border-indigo-400 rounded px-2 py-1 transition-colors whitespace-nowrap"
@@ -389,7 +387,7 @@ export default function Pantry() {
             </div>
 
             <div className="px-5 py-4 border-t border-gray-200 flex gap-3">
-              {editingItem && (
+              {editingItem && isAdmin && (
                 <button
                   onClick={() => handleDelete(editingItem)}
                   disabled={saving}
