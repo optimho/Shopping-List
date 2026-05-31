@@ -148,8 +148,9 @@ Users can register themselves at `/register` but their role defaults to `'user'`
 |-------|------|-------------|
 | `/dashboard` | Dashboard | Active shopping list count, recently purchased items, quick-add search box |
 | `/list` | Shopping List | Live list of pending items — tap Got it to mark purchased |
-| `/pantry` | Pantry | Searchable catalogue of all items; add new items; browse by category |
-| `/pantry/:id` | Pantry Item | Detail — sizes, typical price, full purchase history for this item |
+| `/store` | Store | Searchable catalogue of all items; add new items; browse by category; quick-add to list; admin can edit/delete inline |
+| `/store/:id` | Store Item | Detail — sizes, typical price, full purchase history for this item |
+| `/cupboard` | Cupboard | Home inventory; auto-populated on Got it; Used up decrements and prompts re-add |
 
 ### Admin only
 
@@ -222,15 +223,16 @@ Users can register themselves at `/register` but their role defaults to `'user'`
 | POST | `/api/list/:id/purchase` | User | Mark item as purchased (optionally record price paid) |
 | DELETE | `/api/list/:id` | User | Remove item from list without purchasing (soft-delete) |
 
-### Pantry
+### Store
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| GET | `/api/pantry` | User | List/search pantry items (`?q=`, `?category=`) |
-| POST | `/api/pantry` | User | Add new pantry item |
-| GET | `/api/pantry/:id` | User | Single pantry item + purchase history |
-| PUT | `/api/pantry/:id` | User | Update pantry item (own items; admin can update any) |
-| DELETE | `/api/pantry/:id` | Admin | Soft-delete pantry item |
+| GET | `/api/store` | User | List/search store items (`?search=`, `?category=`) |
+| GET | `/api/store/categories` | User | Distinct category list |
+| POST | `/api/store` | User | Add new store item |
+| GET | `/api/store/:id` | User | Single store item + purchase history |
+| PUT | `/api/store/:id` | Admin | Update store item |
+| DELETE | `/api/store/:id` | Admin | Soft-delete store item |
 
 ### Event Log
 

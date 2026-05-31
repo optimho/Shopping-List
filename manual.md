@@ -252,12 +252,14 @@ Tap any item's name to open its detail page. You will see:
   bought it, the size, quantity, and price paid
 
 **Editing an item (admin only):**
-Tap **Edit** on the detail page to change the name, brand, category, sizes, default
-size, typical price, or notes. Tap **Save** when done.
+Tap the **Edit** button on any row in the Store list, or on the item's detail page.
+A form opens pre-filled with the item's current details — change anything you like
+and tap **Save changes** when done.
 
 **Deleting an item (admin only):**
-Tap **Delete** to remove the item from the store catalogue. Items currently on the
-shopping list are not affected.
+Open the Edit form for the item and tap **Delete** (shown in red at the bottom left).
+The item is removed from the store catalogue. Items currently on the shopping list are
+not affected.
 
 ---
 
